@@ -1,0 +1,57 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ffv">
+<LinearLayout 
+    style="@style/fwv"
+    tools:context=".PomoActivity" >
+
+    <RelativeLayout style="@style/ww"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        >
+
+        <de.passsy.holocircularprogressbar.HoloCircularProgressBar
+            android:id="@+id/main_pomo_seekbar"
+            android:layout_width="300dp"
+            android:layout_height="300dp" />
+
+        <TextView style="@style/ww"
+            android:id="@+id/main_time_left"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:textSize="30sp"
+            android:text="25:00"
+            />
+    </RelativeLayout>
+    
+    <SeekBar
+        android:id="@+id/main_rate_seekbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:orientation="horizontal" >
+        <Button android:id="@+id/main_decrease"
+            android:text="-"
+            style="@style/speed_button"/>
+        <TextView android:id="@+id/main_rate"
+            android:text="80"
+            android:gravity="center"
+            style="@style/speed_button"/>
+        <Button android:id="@+id/main_increase"
+            android:text="+"
+            style="@style/speed_button"/>
+    </LinearLayout>
+	<Button android:id="@+id/main_start"
+	     android:layout_margin="10dp"
+         android:layout_width="fill_parent"
+         android:text="Start"
+         android:layout_height="wrap_content"/> 
+</LinearLayout>
+
+</ScrollView>
