@@ -37,11 +37,11 @@ public final class PomoActivity_
     }
 
     private void afterSetContentView_() {
+        mRateView = ((TextView) findViewById(id.main_rate));
+        mStartButton = ((Button) findViewById(id.main_start));
         mRateSeekBar = ((SeekBar) findViewById(id.main_rate_seekbar));
         mCountDownView = ((CountDownView) findViewById(id.main_time_left));
         mPomoSeekBar = ((HoloCircularProgressBar) findViewById(id.main_pomo_seekbar));
-        mRateView = ((TextView) findViewById(id.main_rate));
-        mStartButton = ((Button) findViewById(id.main_start));
         {
             View view = findViewById(id.main_increase);
             if (view!= null) {
@@ -58,21 +58,6 @@ public final class PomoActivity_
             }
         }
         {
-            View view = findViewById(id.main_decrease);
-            if (view!= null) {
-                view.setOnClickListener(new OnClickListener() {
-
-
-                    @Override
-                    public void onClick(View view) {
-                        PomoActivity_.this.decreaseRate();
-                    }
-
-                }
-                );
-            }
-        }
-        {
             View view = findViewById(id.main_start);
             if (view!= null) {
                 view.setOnClickListener(new OnClickListener() {
@@ -81,6 +66,21 @@ public final class PomoActivity_
                     @Override
                     public void onClick(View view) {
                         PomoActivity_.this.start();
+                    }
+
+                }
+                );
+            }
+        }
+        {
+            View view = findViewById(id.main_decrease);
+            if (view!= null) {
+                view.setOnClickListener(new OnClickListener() {
+
+
+                    @Override
+                    public void onClick(View view) {
+                        PomoActivity_.this.decreaseRate();
                     }
 
                 }

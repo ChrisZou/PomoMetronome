@@ -104,7 +104,7 @@ public class PomoActivity extends Activity {
 		mPrefs.rate().put(mNomeRate);
 		updateRateView();
 		if (mTickPlayer != null) {
-			mTickPlayer.changeRate(mNomeRate);
+			mTickPlayer.setRate(mNomeRate);
 		}
 	}
 
@@ -117,7 +117,7 @@ public class PomoActivity extends Activity {
 	void start() {
 		if (!mRunning) {
 			mRunning = true;
-			mTickPlayer.changeRate(mNomeRate);
+			mTickPlayer.setRate(mNomeRate);
 			mTickPlayer.start();
 
 			mCountDownView.startCountDown(POMO_LENGTH_SECONDS);

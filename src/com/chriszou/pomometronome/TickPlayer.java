@@ -29,11 +29,7 @@ public class TickPlayer {
 		mPlayHandler = new PlayHandler(mPlayThread.getLooper());
 	}
 
-	private int mSample, mChannel, mAudioFormat;
 	public void setPCMInfo(int sample, int chanel, int audioFormat) {
-		mSample = sample;
-		mChannel = chanel;
-		mAudioFormat = audioFormat;
 		int minBufferSize = AudioTrack.getMinBufferSize(sample, chanel, audioFormat);
 		mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sample, chanel, audioFormat, minBufferSize, AudioTrack.MODE_STREAM);
 
@@ -62,7 +58,7 @@ public class TickPlayer {
 	}
 
 	private int mInterval = 80;
-	public void changeRate(int rate) {
+	public void setRate(int rate) {
 		mInterval = (int) (60.0f / (float) rate * 1000.0f);
 	}
 
@@ -102,13 +98,6 @@ public class TickPlayer {
 				sendEmptyMessageDelayed(0, mInterval);
 			} else {
 				mAudioTrack.flush();
-				// mAudioTrack.stop();
-				// mAudioTrack.release();
-				// int minBufferSize = AudioTrack.getMinBufferSize(sample,
-				// chanel, audioFormat);
-				// mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-				// sample, chanel, audioFormat, minBufferSize,
-				// AudioTrack.MODE_STREAM);
 			}
 		}
 	}
