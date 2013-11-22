@@ -4,11 +4,13 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.widget.TextView;
+import de.passsy.holocircularprogressbar.HoloCircularProgressBar;
 
 public class CountDownView extends TextView {
 
 	private CountDownListener mCountDownListener;
 	private long mEndingTime;
+	private long mStartTime;
 	private boolean mRunning;
 	private Handler mUiHandler;
 	public CountDownView(Context context, AttributeSet attrs) {
@@ -19,20 +21,31 @@ public class CountDownView extends TextView {
 	public void startCountDown(int seconds) {
 		if (!mRunning) {
 			mRunning = true;
-			mEndingTime = System.currentTimeMillis() + seconds * 1000;
+			mStartTime = System.currentTimeMillis();
+			mEndingTime = mStartTime + seconds * 1000;
+			if (mProgressBar != null) {
+				mProgressBar.setMarkerProgress(1.0f);
+			}
+
+			loop();
 		}
 	}
 	
+	HoloCircularProgressBar mProgressBar;
+	public void setProgressBar(HoloCircularProgressBar progressBar) {
+		mProgressBar = progressBar;
+	}
+
 	public void stop() {
 		if (mRunning) {
 			mRunning = false;
-			mUiHandler.removeCallbacks(mUpdateTast);
+			mUiHandler.removeCallbacks(mUpdateTask);
 			setText("00:00");
 		}
 	}
 
 	private void loop() {
-		mUiHandler.postDelayed(mUpdateTast, 1000);
+		mUiHandler.postDelayed(mUpdateTask, 1000);
 	}
 
 	public boolean isRunning() {
@@ -47,7 +60,7 @@ public class CountDownView extends TextView {
 		public void onEnd();
 	}
 
-	private Runnable mUpdateTast = new Runnable() {
+	private Runnable mUpdateTask = new Runnable() {
 		@Override
 		public void run() {
 			long now = System.currentTimeMillis();
@@ -58,6 +71,12 @@ public class CountDownView extends TextView {
 
 			String time = String.format("%02d:%02d", min, sec);
 			setText(time);
+			
+			// Update progress bar
+			if (mProgressBar != null) {
+				long passed = now - mStartTime;
+				mProgressBar.setProgress((float) passed / (float) (mEndingTime - mStartTime));
+			}
 
 			if (remain >= 1000) {
 				loop();

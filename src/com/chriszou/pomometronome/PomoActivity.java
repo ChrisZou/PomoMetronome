@@ -1,17 +1,18 @@
 package com.chriszou.pomometronome;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.media.AudioFormat;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.chriszou.androidlibs.Toaster;
+import com.chriszou.pomometronome.custom.CountDownView;
+import com.chriszou.pomometronome.custom.CountDownView.CountDownListener;
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Click;
 import com.googlecode.androidannotations.annotations.EActivity;
@@ -30,7 +31,7 @@ public class PomoActivity extends Activity {
 	HoloCircularProgressBar mPomoSeekBar;
 
 	@ViewById(R.id.main_time_left)
-	TextView mTimeLeftView;
+	CountDownView mCountDownView;
 
 	@ViewById(R.id.main_rate)
 	TextView mRateView;
@@ -42,10 +43,6 @@ public class PomoActivity extends Activity {
 	Button mStartButton;
 
 	private int mNomeRate = 80;
-	private long mTimeLeft;
-
-	private long mStartTime;
-	private Handler mUiHandler;
 	private TickPlayer mTickPlayer;
 
 	@Pref
@@ -59,7 +56,6 @@ public class PomoActivity extends Activity {
 		// Keep the screen on in this activity
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		mUiHandler = new Handler();
 		mTickPlayer = new TickPlayer(this, R.raw.metronome);
 		mTickPlayer.setPCMInfo(44100, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
 	}
@@ -71,6 +67,8 @@ public class PomoActivity extends Activity {
 		mPomoSeekBar.setProgressColor(Color.RED);
 		updateRateView();
 		
+		mCountDownView.setProgressBar(mPomoSeekBar);
+
 		mRateSeekBar.setMax(MAX_RATE);
 		mNomeRate = mPrefs.rate().get();
 		mRateSeekBar.setProgress(mNomeRate);
@@ -78,7 +76,6 @@ public class PomoActivity extends Activity {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
-			
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
 			}
@@ -106,7 +103,7 @@ public class PomoActivity extends Activity {
 	private void onRateChanged() {
 		mPrefs.rate().put(mNomeRate);
 		updateRateView();
-		if (mRunning) {
+		if (mTickPlayer != null) {
 			mTickPlayer.changeRate(mNomeRate);
 		}
 	}
@@ -120,66 +117,40 @@ public class PomoActivity extends Activity {
 	void start() {
 		if (!mRunning) {
 			mRunning = true;
-			mStartTime = System.currentTimeMillis();
-			mUiHandler.postDelayed(mUpdateTimeTask, 1000);
-
 			mTickPlayer.changeRate(mNomeRate);
 			mTickPlayer.start();
+
+			mCountDownView.startCountDown(POMO_LENGTH_SECONDS);
+			mCountDownView.setCountDownListener(new CountDownListener() {
+				@Override
+				public void onEnd() {
+					mTickPlayer.stop();
+				}
+			});
 
 			mStartButton.setText("Stop");
 		} else {
 			mRunning = false;
 			mTickPlayer.stop();
+			mCountDownView.stop();
 		}
 	}
 
 	void stop() {
 		mPomoSeekBar.setProgress(0);
-		mTimeLeftView.setText("00:00");
 		mStartButton.setText("Start");
 		mTickPlayer.stop();
 	}
 
 	private volatile boolean mRunning = false;
 
-
-
-	@SuppressLint("DefaultLocale")
-	private void updateTime() {
-		long now = System.currentTimeMillis();
-		long progress = (now - mStartTime) / 1000;
-		if (progress < POMO_LENGTH_SECONDS) {
-			float percent = (float) progress / (float) POMO_LENGTH_SECONDS;
-			mPomoSeekBar.setProgress(percent);
-
-			// Update time left view
-			mTimeLeft = POMO_LENGTH_SECONDS - progress;
-			String min = String.format("%02d", mTimeLeft / 60);
-			String sec = String.format("%02d", mTimeLeft % 60);
-			String strTimeLeft = min + ":" + sec;
-			mTimeLeftView.setText(strTimeLeft);
-		} else {
-			mRunning = false;
-		}
-	}
-
 	@Override
 	public void onBackPressed() {
 		if (mRunning) {
+			Toaster.s(this, "Please stop the timer first");
 			return;
 		}
 		super.onBackPressed();
 	}
 
-	private final Runnable mUpdateTimeTask = new Runnable() {
-		@Override
-		public void run() {
-			updateTime();
-			if (mRunning) {
-				mUiHandler.postDelayed(this, 1000);
-			} else {
-				stop();
-			}
-		}
-	};
 }

@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.chriszou.pomometronome.R.id;
+import com.chriszou.pomometronome.custom.CountDownView;
 import com.googlecode.androidannotations.api.SdkVersionHelper;
 import de.passsy.holocircularprogressbar.HoloCircularProgressBar;
 
@@ -36,26 +37,11 @@ public final class PomoActivity_
     }
 
     private void afterSetContentView_() {
-        mTimeLeftView = ((TextView) findViewById(id.main_time_left));
-        mStartButton = ((Button) findViewById(id.main_start));
-        mRateView = ((TextView) findViewById(id.main_rate));
-        mPomoSeekBar = ((HoloCircularProgressBar) findViewById(id.main_pomo_seekbar));
         mRateSeekBar = ((SeekBar) findViewById(id.main_rate_seekbar));
-        {
-            View view = findViewById(id.main_start);
-            if (view!= null) {
-                view.setOnClickListener(new OnClickListener() {
-
-
-                    @Override
-                    public void onClick(View view) {
-                        PomoActivity_.this.start();
-                    }
-
-                }
-                );
-            }
-        }
+        mCountDownView = ((CountDownView) findViewById(id.main_time_left));
+        mPomoSeekBar = ((HoloCircularProgressBar) findViewById(id.main_pomo_seekbar));
+        mRateView = ((TextView) findViewById(id.main_rate));
+        mStartButton = ((Button) findViewById(id.main_start));
         {
             View view = findViewById(id.main_increase);
             if (view!= null) {
@@ -80,6 +66,21 @@ public final class PomoActivity_
                     @Override
                     public void onClick(View view) {
                         PomoActivity_.this.decreaseRate();
+                    }
+
+                }
+                );
+            }
+        }
+        {
+            View view = findViewById(id.main_start);
+            if (view!= null) {
+                view.setOnClickListener(new OnClickListener() {
+
+
+                    @Override
+                    public void onClick(View view) {
+                        PomoActivity_.this.start();
                     }
 
                 }

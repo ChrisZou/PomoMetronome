@@ -15,7 +15,7 @@
             android:layout_width="300dp"
             android:layout_height="300dp" />
 
-        <TextView style="@style/ww"
+        <com.chriszou.pomometronome.custom.CountDownView style="@style/ww"
             android:id="@+id/main_time_left"
             android:gravity="center"
             android:layout_centerInParent="true"
