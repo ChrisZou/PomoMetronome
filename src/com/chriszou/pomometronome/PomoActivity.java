@@ -72,6 +72,7 @@ public class PomoActivity extends Activity {
 		mRateSeekBar.setMax(MAX_RATE);
 		mNomeRate = mPrefs.rate().get();
 		mRateSeekBar.setProgress(mNomeRate);
+		mRateView.setText(mNomeRate + "");
 		mRateSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
@@ -114,32 +115,45 @@ public class PomoActivity extends Activity {
 	}
 
 	@Click(R.id.main_start)
-	void start() {
-		if (!mRunning) {
-			mRunning = true;
-			mTickPlayer.setRate(mNomeRate);
-			mTickPlayer.start();
-
-			mCountDownView.startCountDown(POMO_LENGTH_SECONDS);
-			mCountDownView.setCountDownListener(new CountDownListener() {
-				@Override
-				public void onEnd() {
-					mTickPlayer.stop();
-				}
-			});
-
-			mStartButton.setText("Stop");
-		} else {
+	void onStartClick() {
+		if (mRunning) {
 			mRunning = false;
-			mTickPlayer.stop();
-			mCountDownView.stop();
+			stop(true);
+		} else {
+			mRunning = true;
+			start();
 		}
 	}
 
-	void stop() {
-		mPomoSeekBar.setProgress(0);
+	void start() {
+		mTickPlayer.setRate(mNomeRate);
+		mTickPlayer.start();
+
+		mCountDownView.startCountDown(POMO_LENGTH_SECONDS);
+		mCountDownView.setCountDownListener(new CountDownListener() {
+			@Override
+			public void onEnd() {
+				stop(false);
+			}
+		});
+
+		mStartButton.setText("Stop");
+	}
+
+	/**
+	 * Stop the pomodoro
+	 * 
+	 * @param fromUser
+	 *            Indicate if the event is caused by user clicking "stop" or by
+	 *            the end of the CountDownView
+	 */
+	void stop(boolean fromUser) {
+		mRunning = false;
 		mStartButton.setText("Start");
 		mTickPlayer.stop();
+		if (fromUser) {
+			mCountDownView.stop();
+		}
 	}
 
 	private volatile boolean mRunning = false;

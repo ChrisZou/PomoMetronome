@@ -45,7 +45,6 @@ public class TickPlayer {
 			inputStream.skip(44);
 			ByteArrayOutputStream bos = new ByteArrayOutputStream(1024);
 			while ((i = inputStream.read(buffer)) != -1) {
-				// mAudioTrack.write(buffer, 0, i);
 				bos.write(buffer, 0, i);
 			}
 			bos.flush();

@@ -85,6 +85,9 @@ public class CountDownView extends TextView {
 				if (mCountDownListener != null) {
 					mCountDownListener.onEnd();
 				}
+				if (mProgressBar != null) {
+					mProgressBar.setProgress(1.0f);
+				}
 			}
 		}
 	};

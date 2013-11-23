@@ -37,11 +37,11 @@ public final class PomoActivity_
     }
 
     private void afterSetContentView_() {
-        mRateView = ((TextView) findViewById(id.main_rate));
         mStartButton = ((Button) findViewById(id.main_start));
+        mPomoSeekBar = ((HoloCircularProgressBar) findViewById(id.main_pomo_seekbar));
+        mRateView = ((TextView) findViewById(id.main_rate));
         mRateSeekBar = ((SeekBar) findViewById(id.main_rate_seekbar));
         mCountDownView = ((CountDownView) findViewById(id.main_time_left));
-        mPomoSeekBar = ((HoloCircularProgressBar) findViewById(id.main_pomo_seekbar));
         {
             View view = findViewById(id.main_increase);
             if (view!= null) {
@@ -65,7 +65,7 @@ public final class PomoActivity_
 
                     @Override
                     public void onClick(View view) {
-                        PomoActivity_.this.start();
+                        PomoActivity_.this.onStartClick();
                     }
 
                 }
